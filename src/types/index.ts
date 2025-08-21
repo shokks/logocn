@@ -1,0 +1,80 @@
+export interface Logo {
+  name: string;           // Display name (e.g., "Apple")
+  slug: string;           // Simple Icons slug (e.g., "apple")
+  category: Category;     // Category enum
+  tags: string[];         // Searchable tags
+  hex?: string;          // Brand color (optional)
+  aliases?: string[];    // Alternative names for search
+}
+
+export enum Category {
+  Tech = "tech",
+  Social = "social",
+  Development = "development",
+  Cloud = "cloud",
+  Database = "database",
+  Payment = "payment",
+  Design = "design",
+  Productivity = "productivity"
+}
+
+export interface Config {
+  logoDirectory: string;  // Where to save logos
+  useColor: boolean;      // Whether to use colored output
+  registry?: string;      // Custom registry URL (future)
+}
+
+export interface DownloadResult {
+  success: boolean;
+  logoName: string;
+  filePath?: string;
+  error?: string;
+}
+
+export interface LogoRegistry {
+  version: string;
+  source: string;
+  sourceVersion: string;
+  logos: Logo[];
+}
+
+export interface ProjectConfig {
+  framework: Framework;
+  logoDirectory: string;
+  importStyle: ImportStyle;
+  typescript: boolean;
+  exportFile: string;
+  generateComponent: boolean;
+  version: string;
+}
+
+export enum Framework {
+  NextJS = "nextjs",
+  React = "react", 
+  Vue = "vue",
+  Svelte = "svelte",
+  Angular = "angular",
+  Vanilla = "vanilla",
+  Unknown = "unknown"
+}
+
+export enum ImportStyle {
+  Component = "component",  // Import as React component
+  URL = "url",             // Import as URL/path
+  Static = "static"        // Static file reference
+}
+
+export interface FrameworkConfig {
+  name: string;
+  detectFiles: string[];
+  dependencies: string[];
+  devDependencies: string[];
+  configFiles: {
+    path: string;
+    content: string;
+  }[];
+  defaultDirectory: string;
+  defaultExportFile: string;
+  importStyle: ImportStyle;
+  generateComponent: boolean;
+}
