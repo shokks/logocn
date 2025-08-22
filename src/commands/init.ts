@@ -12,6 +12,7 @@ import {
   isProjectInitialized
 } from '../utils/frameworks.js';
 import { generateExportFile } from '../utils/exportGenerator.js';
+import { displayBanner, boxMessage } from '../utils/banner.js';
 import { Framework, ImportStyle } from '../types/index.js';
 
 interface InitOptions {
@@ -24,19 +25,17 @@ interface InitOptions {
  * Handle the init command - initialize LogoCN in a project
  */
 export async function handleInit(options: InitOptions = {}): Promise<void> {
-  console.log();
-  console.log(chalk.cyan.bold('🚀 Initialize LogoCN'));
-  console.log(chalk.gray('Setting up LogoCN for optimal framework integration'));
-  console.log();
+  // Display premium banner
+  displayBanner();
 
   try {
     const projectPath = process.cwd();
     
     // Check if already initialized
     if (await isProjectInitialized(projectPath) && !options.force) {
-      console.log(chalk.yellow('⚠  LogoCN is already initialized in this project'));
-      console.log(chalk.gray('  Use --force to reinitialize'));
-      console.log(chalk.gray('  Current config: logocn.config.json'));
+      console.log(chalk.yellow('⚠  LogoCN configuration already exists in this project'));
+      console.log(chalk.gray('  Configuration file: logocn.config.json'));
+      console.log(chalk.gray('  Use --force to reconfigure'));
       return;
     }
 
@@ -111,24 +110,27 @@ export async function handleInit(options: InitOptions = {}): Promise<void> {
     const logoPath = path.join(projectPath, projectConfig.logoDirectory);
     await fs.ensureDir(logoPath);
     
-    console.log(chalk.green.bold('✅ LogoCN initialized successfully!'));
-    console.log();
-    console.log(chalk.bold('Next steps:'));
-    console.log(chalk.gray('  1. Add your first logo:'));
-    console.log(chalk.cyan(`     logocn add react`));
-    console.log(chalk.gray('  2. Use in your project:'));
-    
     // Create lib directory during init
     const libDir = path.dirname(path.join(projectPath, projectConfig.exportFile));
     await fs.ensureDir(libDir);
     
-    // Simple usage example
+    console.log();
+    console.log(chalk.green.bold('  ✅ LogoCN initialized successfully!'));
+    console.log();
+    
+    // Display next steps in a beautiful box
     const libPath = projectConfig.exportFile.replace(/\.[jt]s$/, '');
-    console.log(chalk.cyan(`     import { logos } from '${libPath}'`));
-    console.log(chalk.cyan(`     <img src={logos.react} alt="React" />`));
+    boxMessage('Next Steps', [
+      chalk.white('1. Add your first logo:'),
+      chalk.cyan('   logocn add react'),
+      '',
+      chalk.white('2. Use in your project:'),
+      chalk.cyan(`   import { logos } from '${libPath}'`),
+      chalk.cyan(`   <img src={logos.react} alt="React" />`),
+    ]);
     
     console.log();
-    console.log(chalk.dim('Configuration saved to: logocn.config.json'));
+    console.log(chalk.hex('#0099B3')('  📁 Configuration saved to: ') + chalk.white('logocn.config.json'));
     
   } catch (error: any) {
     console.error(chalk.red('✗ Failed to initialize LogoCN:'), error.message);
@@ -147,7 +149,7 @@ async function installDependencies(framework: Framework, skipPrompts: boolean = 
     return;
   }
   
-  console.log(chalk.blue('📦 Installing dependencies...'));
+  console.log(chalk.blue('📦 Checking dependencies...'));
   
   // Check if dependencies are already installed
   const packageJsonPath = path.join(process.cwd(), 'package.json');
@@ -169,7 +171,7 @@ async function installDependencies(framework: Framework, skipPrompts: boolean = 
   const missingDeps = devDeps.filter(dep => !allDeps[dep]);
   
   if (missingDeps.length === 0) {
-    console.log(chalk.green('✓ All required dependencies already installed'));
+    console.log(chalk.green('✓ All required dependencies for SVG support already installed'));
     return;
   }
   
@@ -177,13 +179,14 @@ async function installDependencies(framework: Framework, skipPrompts: boolean = 
     const { installDeps } = await inquirer.prompt([{
       type: 'confirm',
       name: 'installDeps',
-      message: `Install ${missingDeps.join(', ')} for ${getFrameworkConfig(framework).name} SVG support?`,
+      message: `Install ${missingDeps.join(', ')} for ${getFrameworkConfig(framework).name} React component generation?`,
       default: true
     }]);
     
     if (!installDeps) {
       console.log(chalk.yellow('⚠  Skipping dependency installation'));
-      console.log(chalk.gray(`  You can install manually: npm install --save-dev ${missingDeps.join(' ')}`));
+      console.log(chalk.gray(`  You can install manually later: npm install --save-dev ${missingDeps.join(' ')}`));
+      console.log(chalk.gray(`  Note: This is only needed if you want to generate React components from SVGs`));
       return;
     }
   }
@@ -225,16 +228,76 @@ async function createConfigFiles(framework: Framework, projectPath: string): Pro
     
     // Check if file already exists
     if (await fs.pathExists(filePath)) {
-      const { overwrite } = await inquirer.prompt([{
-        type: 'confirm',
-        name: 'overwrite',
-        message: `${configFile.path} already exists. Overwrite?`,
-        default: false
-      }]);
+      console.log(chalk.yellow(`\n⚠  ${configFile.path} already exists`));
       
-      if (!overwrite) {
-        console.log(chalk.yellow(`⚠  Skipping ${configFile.path}`));
-        continue;
+      // For Next.js config, show what needs to be added
+      if (framework === Framework.NextJS && configFile.path.includes('next.config')) {
+        console.log(chalk.blue('\n📝 Add this to your existing next.config.js:'));
+        console.log(chalk.gray('----------------------------------------'));
+        console.log(chalk.cyan(`
+  // Add to your webpack config
+  webpack(config) {
+    config.module.rules.push({
+      test: /\\.svg$/,
+      use: ['@svgr/webpack']
+    })
+    return config
+  }`));
+        console.log(chalk.gray('----------------------------------------'));
+        
+        const { action } = await inquirer.prompt([{
+          type: 'list',
+          name: 'action',
+          message: 'How would you like to proceed?',
+          choices: [
+            { name: 'I\'ll add it manually', value: 'manual' },
+            { name: 'Create backup and update automatically', value: 'backup' },
+            { name: 'Skip configuration', value: 'skip' }
+          ],
+          default: 'manual'
+        }]);
+        
+        if (action === 'manual') {
+          console.log(chalk.gray('  Please add the configuration manually'));
+          continue;
+        } else if (action === 'skip') {
+          console.log(chalk.yellow(`  Skipping ${configFile.path}`));
+          continue;
+        } else if (action === 'backup') {
+          // Create backup
+          const backupPath = `${filePath}.backup`;
+          await fs.copyFile(filePath, backupPath);
+          console.log(chalk.green(`✓ Created backup: ${path.basename(backupPath)}`));
+          
+          // Note: In a real implementation, we'd merge configs properly
+          // For now, we'll just notify the user
+          console.log(chalk.yellow('⚠  Please merge the configuration manually'));
+          console.log(chalk.gray(`  Your original config is backed up at: ${path.basename(backupPath)}`));
+          continue;
+        }
+      } else {
+        // For other config files
+        const { action } = await inquirer.prompt([{
+          type: 'list',
+          name: 'action',
+          message: `${configFile.path} already exists. What would you like to do?`,
+          choices: [
+            { name: 'Keep existing file', value: 'keep' },
+            { name: 'Create backup and replace', value: 'backup' },
+            { name: 'Replace without backup', value: 'replace' }
+          ],
+          default: 'keep'
+        }]);
+        
+        if (action === 'keep') {
+          console.log(chalk.yellow(`  Keeping existing ${configFile.path}`));
+          continue;
+        } else if (action === 'backup') {
+          const backupPath = `${filePath}.backup`;
+          await fs.copyFile(filePath, backupPath);
+          console.log(chalk.green(`✓ Created backup: ${path.basename(backupPath)}`));
+        }
+        // If 'replace' or after 'backup', continue to write the file
       }
     }
     

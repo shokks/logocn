@@ -96,3 +96,57 @@ jspm_packages/
 
 # DynamoDB Local files
 .dynamodb/
+
+# Claude Code specific files
+.claude/
+CLAUDE.md
+
+# Development and testing
+logocn.config.json
+test/
+temp/
+tmp/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Cache files
+.logocn/
+~/.logocn/
+
+# Local development files
+.env.development
+.env.test
+TODO.md
+NOTES.md
+scratch/
+playground/
+
+# Generated logo files during development
+logos/
+components/logos/
+src/components/logos/
+assets/logos/
+
+# Backup files
+*.backup
+*.bak
+*.orig
+
+# Editor specific
+*.sublime-project
+*.sublime-workspace
+.history/
+.vscode-test/
+
+# Debug files
+debug.log
+error.log
+*.log.gz
+
+# Package manager locks (keep only one)
+# Uncomment the ones you want to ignore
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml

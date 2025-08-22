@@ -1,6 +1,8 @@
 import chalk from 'chalk';
 import ora from 'ora';
 import inquirer from 'inquirer';
+import fs from 'fs-extra';
+import path from 'path';
 import { SimpleIconsService } from '../services/simpleIcons.js';
 import { RegistryManager } from '../utils/registry.js';
 import { FileManager } from '../utils/fileManager.js';
@@ -8,7 +10,7 @@ import { getLogoDirectory } from '../utils/config.js';
 import { getEffectiveLogoDirectory } from '../utils/frameworks.js';
 import { generateExportFile } from '../utils/exportGenerator.js';
 import { DownloadResult } from '../types/index.js';
-import { getOrCreateProjectConfig, isZeroConfigMode, fuzzySearchLogo } from '../utils/autoDetect.js';
+import { getOrCreateProjectConfig, isZeroConfigMode } from '../utils/autoDetect.js';
 
 /**
  * Handle the add command - download and save logo(s) to the project
@@ -25,7 +27,6 @@ export async function handleAdd(logos: string[]): Promise<void> {
   try {
     // Initialize services
     const registry = new RegistryManager();
-    await registry.load();
     
     const simpleIcons = new SimpleIconsService();
     const fileManager = new FileManager();
@@ -47,56 +48,33 @@ export async function handleAdd(logos: string[]): Promise<void> {
     // Process each logo
     for (let i = 0; i < logos.length; i++) {
       const logoName = logos[i];
-      spinner.text = `Downloading ${logoName} (${i + 1}/${logos.length})...`;
+      spinner.text = `Processing ${logoName} (${i + 1}/${logos.length})...`;
       
-      // Find logo in registry (with fuzzy search support)
-      let logo = registry.findByName(logoName);
-      
-      // If not found, try fuzzy search
-      if (!logo) {
-        const allLogos = registry.getAllNames();
-        const fuzzyMatch = fuzzySearchLogo(logoName, allLogos);
-        if (fuzzyMatch) {
-          logo = registry.findByName(fuzzyMatch);
-          if (logo) {
-            spinner.text = `Found "${logo.name}" for "${logoName}" (${i + 1}/${logos.length})...`;
-          }
-        }
-      }
+      // Find logo in registry
+      const logo = await registry.findByName(logoName);
       
       if (!logo) {
-        // Try direct slug if not found by name
-        const slug = simpleIcons.normalizeToSlug(logoName);
-        if (simpleIcons.validateSlug(slug)) {
-          // Try downloading directly with the slug
-          try {
-            const svgContent = await simpleIcons.downloadSVG(slug);
-            const filePath = await fileManager.saveSVG(svgContent, slug, logoDir);
-            results.push({
-              success: true,
-              logoName: logoName,
-              filePath
-            });
-            continue;
-          } catch (error) {
-            results.push({
-              success: false,
-              logoName,
-              error: `Logo "${logoName}" not found. Try "logocn search ${logoName}" to find similar logos.`
-            });
-            continue;
-          }
-        } else {
-          results.push({
-            success: false,
-            logoName,
-            error: `Logo "${logoName}" not found. Try "logocn search ${logoName}" to find similar logos.`
-          });
-          continue;
-        }
+        results.push({
+          success: false,
+          logoName,
+          error: `Logo "${logoName}" not found. Try "logocn search ${logoName}" to find similar logos.`
+        });
+        continue;
       }
       
       try {
+        // Check if logo already exists
+        const expectedPath = path.join(logoDir, `${logo.slug}.svg`);
+        if (await fs.pathExists(expectedPath)) {
+          results.push({
+            success: true,
+            logoName: logo.name,
+            filePath: expectedPath
+          });
+          spinner.text = `✓ ${logo.name} already exists (${i + 1}/${logos.length})`;
+          continue;
+        }
+        
         // Download SVG from Simple Icons
         const svgContent = await simpleIcons.downloadSVG(logo.slug);
         
@@ -192,12 +170,11 @@ async function handleInteractiveAdd(): Promise<void> {
   try {
     // Initialize services
     const registry = new RegistryManager();
-    await registry.load();
     
     spinner.stop();
     
     // Get all available logos with categories
-    const allLogos = registry.getAll();
+    const allLogos = await registry.getAll();
     
     // Group logos by category
     const categories: Record<string, string[]> = {
