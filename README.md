@@ -11,7 +11,7 @@ npx logocn@latest add tesla
 
 ## What is this?
 
-**logoCN** lets you add any of 2,800+ company logos to your project with a single command. No packages to install. No dependencies. Just copy and paste.
+**logoCN** lets you add any of 3,300+ company logos to your project with a single command. No packages to install. No dependencies. Just copy and paste.
 
 - ✓ **SVG files** saved directly to your project
 - ✓ **React components** with TypeScript support (optional)
@@ -173,7 +173,7 @@ export const SocialLink: FC<SocialLinkProps> = ({ platform, size = 24 }) => {
 
 ## Available Logos
 
-2,800+ logos from [Simple Icons](https://simpleicons.org) including:
+3,300+ logos from [Simple Icons](https://simpleicons.org) including:
 
 **Tech:** Apple, Google, Microsoft, Amazon, Tesla, OpenAI, Meta  
 **Dev Tools:** GitHub, GitLab, VS Code, Figma, Vercel, Netlify  
