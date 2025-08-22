@@ -24,7 +24,7 @@ npx logocn@latest add react
 npx logocn@latest init
 
 # Add logos to your project
-npx logocn@latest add react vue angular
+npx logocn@latest add tesla apple palantir
 
 # That's it! Logos are in your project
 ```
@@ -39,7 +39,7 @@ npx logocn@latest add github   # Add your first logo
 
 ### Adding multiple logos
 ```bash
-npx logocn@latest add react nodejs mongodb stripe
+npx logocn@latest add tesla openai microsoft shadcn
 ```
 
 ### Finding and adding logos
