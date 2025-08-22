@@ -1,7 +1,7 @@
 {
   "name": "logocn",
   "version": "0.1.0",
-  "description": "CLI tool to add SVG logos to your project",
+  "description": "Add SVG logos to your project with a single command. Like shadcn/ui, but for icons.",
   "main": "dist/index.js",
   "type": "module",
   "bin": {
@@ -25,11 +25,11 @@
   },
   "keywords": [
     "cli",
-    "logos",
     "svg",
+    "logos",
     "icons",
-    "simple-icons",
-    "component-library",
+    "react",
+    "typescript",
     "shadcn",
     "developer-tools"
   ],
