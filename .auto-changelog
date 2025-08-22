@@ -1,0 +1,19 @@
+{
+  "output": "CHANGELOG.md",
+  "template": "keepachangelog",
+  "unreleased": true,
+  "commitLimit": false,
+  "package": true,
+  "replaceText": {
+    "^[Ff]eat(\\(.+\\))?:": "Added:",
+    "^[Ff]ix(\\(.+\\))?:": "Fixed:",
+    "^[Dd]ocs(\\(.+\\))?:": "Documentation:",
+    "^[Ss]tyle(\\(.+\\))?:": "Style:",
+    "^[Rr]efactor(\\(.+\\))?:": "Changed:",
+    "^[Pp]erf(\\(.+\\))?:": "Performance:",
+    "^[Tt]est(\\(.+\\))?:": "Tests:",
+    "^[Cc]hore(\\(.+\\))?:": "Maintenance:",
+    "^[Bb]reak(ing)?(\\(.+\\))?:": "BREAKING CHANGE:"
+  },
+  "href": "https://github.com/shokks/logocn"
+}
