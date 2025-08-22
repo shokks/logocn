@@ -1,21 +1,9 @@
 export interface Logo {
   name: string;           // Display name (e.g., "Apple")
   slug: string;           // Simple Icons slug (e.g., "apple")
-  category: Category;     // Category enum
-  tags: string[];         // Searchable tags
-  hex?: string;          // Brand color (optional)
-  aliases?: string[];    // Alternative names for search
-}
-
-export enum Category {
-  Tech = "tech",
-  Social = "social",
-  Development = "development",
-  Cloud = "cloud",
-  Database = "database",
-  Payment = "payment",
-  Design = "design",
-  Productivity = "productivity"
+  hex: string;            // Brand color
+  source: string;         // Official source URL
+  aliases?: string[];     // Alternative names for search
 }
 
 export interface Config {
@@ -31,12 +19,6 @@ export interface DownloadResult {
   error?: string;
 }
 
-export interface LogoRegistry {
-  version: string;
-  source: string;
-  sourceVersion: string;
-  logos: Logo[];
-}
 
 export interface ProjectConfig {
   framework: Framework;

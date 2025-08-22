@@ -2,7 +2,6 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
-import figlet from 'figlet';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -14,6 +13,7 @@ import { handleSearch } from './commands/search.js';
 import { handleConfig } from './commands/config.js';
 import { handleInit } from './commands/init.js';
 import { handleRemove } from './commands/remove.js';
+import { displayCompactBanner } from './utils/banner.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,24 +22,16 @@ const { version } = packageJson;
 
 const program = new Command();
 
-// Display banner
-const displayBanner = (): void => {
-  console.log(
-    chalk.cyan(
-      figlet.textSync('LogoCN', {
-        horizontalLayout: 'full',
-        font: 'Standard'
-      })
-    )
-  );
-  console.log(chalk.gray('Add SVG logos to your project with ease\n'));
-};
-
 // Main CLI setup
 const setupCLI = (): void => {
-  // Only show banner for help or when no command is provided
-  if (process.argv.length <= 2 || process.argv[2] === '--help' || process.argv[2] === '-h') {
-    displayBanner();
+  // Show compact banner for help, no command
+  const showBanner = process.argv.length <= 2 || 
+                     process.argv[2] === '--help' || 
+                     process.argv[2] === '-h';
+  
+  // Don't show banner for init (it has its own premium banner)
+  if (showBanner && process.argv[2] !== 'init') {
+    displayCompactBanner();
   }
 
   program
@@ -82,7 +74,8 @@ const setupCLI = (): void => {
   program
     .command('list')
     .description('List all available logos')
-    .option('-c, --category <category>', 'Filter by category')
+    .option('-p, --page <number>', 'Page number for pagination')
+    .option('-s, --search <query>', 'Search within list')
     .action(async (options) => {
       await handleList(options);
     });
@@ -94,6 +87,15 @@ const setupCLI = (): void => {
     .argument('<query>', 'Search query')
     .action(async (query: string) => {
       await handleSearch(query);
+    });
+
+  // Update command
+  program
+    .command('update')
+    .description('Update the Simple Icons cache')
+    .action(async () => {
+      const { handleUpdate } = await import('./commands/update.js');
+      await handleUpdate();
     });
 
   // Config command

@@ -72,15 +72,18 @@ export async function handleRemove(logos: string[]): Promise<void> {
     
     spinner.stop();
     
-    // Regenerate export file if any logos were removed
+    // Always regenerate export file after remove operations
+    // This ensures the index.tsx is updated even if all logos are removed
     const successful = results.filter(r => r.success);
     if (successful.length > 0) {
-      const exportSpinner = ora('Regenerating export file...').start();
+      const exportSpinner = ora('Updating index file...').start();
       try {
         await generateExportFile();
-        exportSpinner.succeed('Regenerated export file');
-      } catch (error) {
-        exportSpinner.warn('Failed to regenerate export file');
+        exportSpinner.succeed('Updated index file');
+      } catch (error: any) {
+        exportSpinner.fail('Failed to update index file');
+        console.error(chalk.yellow('Warning:'), error.message);
+        console.log(chalk.gray('You may need to manually update the index file.'));
       }
     }
     

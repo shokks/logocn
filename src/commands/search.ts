@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import { RegistryManager } from '../utils/registry.js';
-import { Logo } from '../types/index.js';
 
 /**
  * Handle the search command - search for logos by query
@@ -8,16 +7,14 @@ import { Logo } from '../types/index.js';
 export async function handleSearch(query: string): Promise<void> {
   if (!query || query.trim() === '') {
     console.error(chalk.red('✗ Please provide a search query'));
-    console.log(chalk.gray('  Example: logocn search "social media"'));
+    console.log(chalk.gray('  Example: logocn search react'));
     console.log(chalk.gray('           logocn search database'));
     process.exit(1);
   }
   
   try {
     const registry = new RegistryManager();
-    await registry.load();
-    
-    const results = registry.search(query);
+    const results = await registry.search(query);
     
     console.log();
     
@@ -25,9 +22,9 @@ export async function handleSearch(query: string): Promise<void> {
       console.log(chalk.yellow(`No logos found matching "${query}"`));
       console.log();
       console.log(chalk.dim('Suggestions:'));
-      console.log(chalk.dim('  • Try a different search term'));
-      console.log(chalk.dim('  • Use "logocn list" to see all available logos'));
-      console.log(chalk.dim('  • Search by category: tech, social, development, etc.'));
+      console.log(chalk.dim('  • Try a shorter search term'));
+      console.log(chalk.dim('  • Use "logocn list" to browse all logos'));
+      console.log(chalk.dim('  • Use "logocn list --page 1" to see the first page'));
       return;
     }
     
@@ -36,39 +33,26 @@ export async function handleSearch(query: string): Promise<void> {
     console.log(chalk.gray(`   Found ${results.length} matching logo${results.length > 1 ? 's' : ''}`));
     console.log();
     
-    // Group results by category for better organization
-    const grouped = results.reduce((acc, logo) => {
-      if (!acc[logo.category]) acc[logo.category] = [];
-      acc[logo.category].push(logo);
-      return acc;
-    }, {} as Record<string, Logo[]>);
+    // Display results (limit to 50 for readability)
+    const displayResults = results.slice(0, 50);
     
-    // Display results by category
-    Object.entries(grouped)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .forEach(([category, logos]) => {
-        console.log(chalk.yellow.bold(`${category.toUpperCase()}`));
-        console.log(chalk.gray('─'.repeat(50)));
-        
-        logos.forEach(logo => {
-          // Display logo name and slug
-          console.log(`  ${chalk.bold(logo.name)} ${chalk.gray(`(${logo.slug})`)}`);
-          
-          // Display tags
-          if (logo.tags.length > 0) {
-            const displayTags = logo.tags.slice(0, 5).join(', ');
-            const moreTags = logo.tags.length > 5 ? `, +${logo.tags.length - 5} more` : '';
-            console.log(chalk.gray(`    Tags: ${displayTags}${moreTags}`));
-          }
-          
-          // Display aliases if present
-          if (logo.aliases && logo.aliases.length > 0) {
-            console.log(chalk.gray(`    Also known as: ${logo.aliases.join(', ')}`));
-          }
-          
-          console.log();
-        });
-      });
+    displayResults.forEach(logo => {
+      // Display logo name and slug
+      console.log(`  ${chalk.bold(logo.name)} ${chalk.gray(`[${logo.slug}]`)}`);
+      
+      // Display aliases if present
+      if (logo.aliases && logo.aliases.length > 0) {
+        console.log(chalk.gray(`    Also known as: ${logo.aliases.join(', ')}`));
+      }
+      
+      console.log();
+    });
+    
+    if (results.length > 50) {
+      console.log(chalk.dim(`  ...and ${results.length - 50} more results`));
+      console.log(chalk.dim(`  Refine your search for more specific results`));
+      console.log();
+    }
     
     // Display usage hint
     console.log(chalk.gray('─'.repeat(50)));
@@ -81,6 +65,7 @@ export async function handleSearch(query: string): Promise<void> {
     
   } catch (error: any) {
     console.error(chalk.red('Search failed:'), error.message);
+    console.log(chalk.dim('\nTry running "logocn update" to refresh the logo cache'));
     process.exit(1);
   }
 }
