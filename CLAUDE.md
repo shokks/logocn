@@ -42,6 +42,7 @@ npm run changelog       # Manually generate changelog from commits
   - `list.ts` - Display available logos with pagination
   - `search.ts` - Search logos by name with smart matching
   - `config.ts` - Manage configuration settings
+  - `uninstall.ts` - Clean up LogoCN files from project
 - **`src/utils/`**: Utility modules
   - `cache.ts` - Cache manager for Simple Icons metadata (7-day expiration)
   - `registry.ts` - Logo registry with CDN integration
@@ -79,6 +80,7 @@ Commands follow this pattern:
 - **`logocn list`** - Display all 2,800+ available logos with pagination
 - **`logocn search <query>`** - Smart search with fuzzy matching
 - **`logocn config`** - View/update configuration settings
+- **`logocn uninstall`** - Clean up LogoCN files from project
 
 ### Key Features
 - **2,800+ Logos**: Full Simple Icons library available
