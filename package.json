@@ -1,6 +1,6 @@
 {
   "name": "logocn",
-  "version": "0.1.1-beta.2",
+  "version": "0.1.1-beta.3",
   "description": "Add SVG logos to your project with a single command. Like shadcn/ui, but for icons.",
   "main": "dist/index.js",
   "type": "module",
