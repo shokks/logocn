@@ -2,6 +2,8 @@
 
 Add SVG logos to your project with a single command. Just like [shadcn/ui](https://ui.shadcn.com), but for logos.
 
+[![Follow on X](https://img.shields.io/twitter/follow/5aikat?style=social)](https://x.com/5aikat)
+
 ```bash
 npx logocn@latest add react
 ```
@@ -353,6 +355,10 @@ logocn add react
 
 MIT
 
+## Author
+
+**Created by [@5aikat](https://x.com/5aikat)**
+
 ## Credits
 
 - Logo source: [Simple Icons](https://simpleicons.org)
@@ -362,10 +368,4 @@ MIT
 
 <p align="center">
   Made with ❤️ by developers, for developers
-</p>
-
-<p align="center">
-  <a href="https://github.com/yourusername/logocn">GitHub</a> •
-  <a href="https://www.npmjs.com/package/logocn">npm</a> •
-  <a href="https://github.com/yourusername/logocn/issues">Issues</a>
 </p>
