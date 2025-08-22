@@ -305,6 +305,8 @@ yarn global add logocn
 
 MIT © [@5aikat](https://x.com/5aikat)
 
+> **Note**: All logos are trademarks of their respective companies. Please ensure you have permission to use them in your project.
+
 ---
 
 <sub>Logo source: [Simple Icons](https://simpleicons.org) • Inspired by [shadcn/ui](https://ui.shadcn.com)</sub>
