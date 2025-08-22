@@ -89,10 +89,10 @@ logocn init --yes            # Use defaults without prompts
 
 ```bash
 # Add a single logo
-logocn add react
+logocn add tesla
 
 # Add multiple logos
-logocn add react vue angular nodejs
+logocn add apple google microsoft tesla
 
 # Interactive mode - search, browse, or select popular logos
 logocn add
@@ -102,12 +102,12 @@ logocn add
 
 ```bash
 # Remove a single logo
-logocn remove react
+logocn remove tesla
 # or use alias
-logocn rm react
+logocn rm tesla
 
 # Remove multiple logos
-logocn remove react vue angular
+logocn remove apple google angular
 ```
 
 ### Search for logos
@@ -229,16 +229,16 @@ export function SocialLinks() {
 ### With custom colors
 
 ```jsx
-import { ReactLogo } from '@/components/logos'
+import { TeslaLogo } from '@/components/logos'
 
 // Override default brand color
-<ReactLogo size={48} color="#61DAFB" />
+<TeslaLogo size={48} color="#CC0000" />
 
 // Use with Tailwind classes
-<ReactLogo size={48} className="text-blue-500" />
+<TeslaLogo size={48} className="text-red-500" />
 
 // Dynamic colors
-<ReactLogo size={48} color={isDark ? '#fff' : '#000'} />
+<TeslaLogo size={48} color={isDark ? '#fff' : '#000'} />
 ```
 
 ### Responsive sizing
@@ -273,28 +273,6 @@ export function MusicPlayer() {
 }
 ```
 
-### In navigation
-
-```jsx
-import { 
-  HomeLogo, 
-  SearchLogo, 
-  BellLogo, 
-  UserLogo 
-} from '@/components/logos'
-
-export function NavBar() {
-  return (
-    <nav className="flex items-center gap-6">
-      <HomeLogo size={20} />
-      <SearchLogo size={20} />
-      <BellLogo size={20} />
-      <UserLogo size={20} />
-    </nav>
-  )
-}
-```
-
 ### With TypeScript
 
 ```tsx
@@ -323,32 +301,31 @@ export const SocialLink: FC<SocialLinkProps> = ({
 }
 ```
 
-### Tech stack display
+### Company showcase
 
 ```jsx
 import { 
-  ReactLogo,
-  TypescriptLogo,
-  NextdotjsLogo,
-  TailwindcssLogo,
-  NodedotjsLogo
+  AppleLogo,
+  GoogleLogo,
+  MicrosoftLogo,
+  TeslaLogo,
+  AmazonLogo
 } from '@/components/logos'
 
-export function TechStack() {
-  const technologies = [
-    { Logo: ReactLogo, name: 'React' },
-    { Logo: TypescriptLogo, name: 'TypeScript' },
-    { Logo: NextdotjsLogo, name: 'Next.js' },
-    { Logo: TailwindcssLogo, name: 'Tailwind' },
-    { Logo: NodedotjsLogo, name: 'Node.js' },
+export function TrustedByCompanies() {
+  const companies = [
+    { Logo: AppleLogo, name: 'Apple' },
+    { Logo: GoogleLogo, name: 'Google' },
+    { Logo: MicrosoftLogo, name: 'Microsoft' },
+    { Logo: TeslaLogo, name: 'Tesla' },
+    { Logo: AmazonLogo, name: 'Amazon' },
   ]
   
   return (
-    <div className="flex flex-wrap gap-4">
-      {technologies.map(({ Logo, name }) => (
-        <div key={name} className="flex items-center gap-2">
-          <Logo size={24} />
-          <span>{name}</span>
+    <div className="flex flex-wrap gap-8 items-center">
+      {companies.map(({ Logo, name }) => (
+        <div key={name} className="opacity-60 hover:opacity-100 transition-opacity">
+          <Logo size={48} />
         </div>
       ))}
     </div>
