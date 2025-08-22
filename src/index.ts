@@ -13,6 +13,7 @@ import { handleSearch } from './commands/search.js';
 import { handleConfig } from './commands/config.js';
 import { handleInit } from './commands/init.js';
 import { handleRemove } from './commands/remove.js';
+import { handleUninstall } from './commands/uninstall.js';
 import { displayCompactBanner } from './utils/banner.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -110,6 +111,16 @@ const setupCLI = (): void => {
       await handleConfig(options);
     });
 
+  // Uninstall command
+  program
+    .command('uninstall')
+    .description('Clean up LogoCN files from your project')
+    .option('-y, --yes', 'Skip confirmation prompts')
+    .option('--keep-logos', 'Keep logo files, only remove configuration')
+    .action(async (options) => {
+      await handleUninstall(options);
+    });
+
   // Add help examples
   program.addHelpText('after', `
 ${chalk.bold('Examples:')}
@@ -117,9 +128,9 @@ ${chalk.bold('Examples:')}
   $ logocn add apple              ${chalk.gray('# Add Apple logo')}
   $ logocn add react vue angular  ${chalk.gray('# Add multiple logos')}
   $ logocn list                   ${chalk.gray('# List all available logos')}
-  $ logocn list --category tech   ${chalk.gray('# List logos in tech category')}
   $ logocn search social          ${chalk.gray('# Search for social media logos')}
   $ logocn config --set dir=./assets/logos  ${chalk.gray('# Set custom directory')}
+  $ logocn uninstall              ${chalk.gray('# Clean up LogoCN from project')}
   
 ${chalk.bold('Quick Start:')}
   $ npx logocn@latest init        ${chalk.gray('# Setup for your framework (recommended)')}

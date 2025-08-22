@@ -209,6 +209,262 @@ All generated React components accept:
 - `height` - Custom height
 - All standard SVG props
 
+## React Component Examples
+
+### Basic usage
+
+```jsx
+import { GithubLogo, TwitterLogo } from '@/components/logos'
+
+export function SocialLinks() {
+  return (
+    <div className="flex gap-4">
+      <GithubLogo size={24} />
+      <TwitterLogo size={24} />
+    </div>
+  )
+}
+```
+
+### With custom colors
+
+```jsx
+import { ReactLogo } from '@/components/logos'
+
+// Override default brand color
+<ReactLogo size={48} color="#61DAFB" />
+
+// Use with Tailwind classes
+<ReactLogo size={48} className="text-blue-500" />
+
+// Dynamic colors
+<ReactLogo size={48} color={isDark ? '#fff' : '#000'} />
+```
+
+### Responsive sizing
+
+```jsx
+import { AppleLogo } from '@/components/logos'
+
+// Responsive sizes
+<AppleLogo className="w-8 h-8 md:w-12 md:h-12" />
+
+// Custom width/height
+<AppleLogo width={100} height={50} />
+
+// Using viewport units
+<AppleLogo size="5vw" />
+```
+
+### With hover effects
+
+```jsx
+import { SpotifyLogo } from '@/components/logos'
+
+export function MusicPlayer() {
+  return (
+    <button className="group">
+      <SpotifyLogo 
+        size={32}
+        className="transition-colors group-hover:text-green-500"
+      />
+    </button>
+  )
+}
+```
+
+### In navigation
+
+```jsx
+import { 
+  HomeLogo, 
+  SearchLogo, 
+  BellLogo, 
+  UserLogo 
+} from '@/components/logos'
+
+export function NavBar() {
+  return (
+    <nav className="flex items-center gap-6">
+      <HomeLogo size={20} />
+      <SearchLogo size={20} />
+      <BellLogo size={20} />
+      <UserLogo size={20} />
+    </nav>
+  )
+}
+```
+
+### With TypeScript
+
+```tsx
+import { FC } from 'react'
+import { GithubLogo, LinkedinLogo } from '@/components/logos'
+
+interface SocialLinkProps {
+  platform: 'github' | 'linkedin'
+  size?: number
+  color?: string
+}
+
+export const SocialLink: FC<SocialLinkProps> = ({ 
+  platform, 
+  size = 24, 
+  color 
+}) => {
+  const logos = {
+    github: GithubLogo,
+    linkedin: LinkedinLogo,
+  }
+  
+  const Logo = logos[platform]
+  
+  return <Logo size={size} color={color} />
+}
+```
+
+### Tech stack display
+
+```jsx
+import { 
+  ReactLogo,
+  TypescriptLogo,
+  NextdotjsLogo,
+  TailwindcssLogo,
+  NodedotjsLogo
+} from '@/components/logos'
+
+export function TechStack() {
+  const technologies = [
+    { Logo: ReactLogo, name: 'React' },
+    { Logo: TypescriptLogo, name: 'TypeScript' },
+    { Logo: NextdotjsLogo, name: 'Next.js' },
+    { Logo: TailwindcssLogo, name: 'Tailwind' },
+    { Logo: NodedotjsLogo, name: 'Node.js' },
+  ]
+  
+  return (
+    <div className="flex flex-wrap gap-4">
+      {technologies.map(({ Logo, name }) => (
+        <div key={name} className="flex items-center gap-2">
+          <Logo size={24} />
+          <span>{name}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+```
+
+### Payment methods
+
+```jsx
+import { 
+  VisaLogo,
+  MastercardLogo,
+  PaypalLogo,
+  StripeLogo,
+  AppleLogo
+} from '@/components/logos'
+
+export function PaymentMethods() {
+  return (
+    <div className="flex gap-3">
+      <VisaLogo size={40} />
+      <MastercardLogo size={40} />
+      <PaypalLogo size={40} />
+      <StripeLogo size={40} />
+      <div className="flex items-center gap-1">
+        <AppleLogo size={20} />
+        <span>Pay</span>
+      </div>
+    </div>
+  )
+}
+```
+
+### Animated logos
+
+```jsx
+import { LoaderLogo } from '@/components/logos'
+
+export function Loading() {
+  return (
+    <div className="animate-spin">
+      <LoaderLogo size={32} />
+    </div>
+  )
+}
+
+// Or with custom animation
+export function PulsingLogo() {
+  return (
+    <div className="animate-pulse">
+      <HeartLogo size={32} color="#ef4444" />
+    </div>
+  )
+}
+```
+
+### With tooltips
+
+```jsx
+import { InfoLogo } from '@/components/logos'
+import { Tooltip } from '@/components/ui/tooltip'
+
+export function InfoButton() {
+  return (
+    <Tooltip content="Click for more information">
+      <button>
+        <InfoLogo size={16} />
+      </button>
+    </Tooltip>
+  )
+}
+
+
+## Uninstalling
+
+### Remove from project
+
+```bash
+# Clean up LogoCN files from current project
+logocn uninstall
+
+# Keep logos but remove config
+logocn uninstall --keep-logos
+
+# Skip confirmation prompts
+logocn uninstall --yes
+```
+
+### Global uninstall
+
+```bash
+# npm
+npm uninstall -g logocn
+
+# yarn
+yarn global remove logocn
+
+# pnpm
+pnpm remove -g logocn
+```
+
+### Manual cleanup
+
+If you need to manually clean up:
+
+```bash
+# Remove project config
+rm logocn.config.json
+
+# Remove logos (optional)
+rm -rf components/logos
+
+# Remove global cache
+rm -rf ~/.logocn
+```
 
 ## Examples
 
