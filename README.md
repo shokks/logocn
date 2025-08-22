@@ -1,451 +1,88 @@
-# LogoCN
+# logoCN
 
-Add SVG logos to your project with a single command. Just like [shadcn/ui](https://ui.shadcn.com), but for logos.
-
-[![Follow on X](https://img.shields.io/twitter/follow/5aikat?style=social)](https://x.com/5aikat)
+Add high-quality SVG logos to your project. Just like shadcn/ui, but for logos.
 
 ```bash
-npx logocn@latest add react
+npx logocn@latest add tesla
 ```
 
-## Features
+[![npm version](https://img.shields.io/npm/v/logocn.svg)](https://www.npmjs.com/package/logocn)
+[![Follow on X](https://img.shields.io/twitter/follow/5aikat?style=social)](https://x.com/5aikat)
 
-✨ **2,800+ logos** from Simple Icons  
-⚡ **Zero config** - works out of the box  
-🎨 **Brand colors** included  
-📦 **Framework agnostic** - just SVG files  
-🚀 **React components** auto-generated  
-💾 **Offline support** with smart caching  
+## What is this?
+
+**logoCN** lets you add any of 2,800+ company logos to your project with a single command. No packages to install. No dependencies. Just copy and paste.
+
+- ✓ **SVG files** saved directly to your project
+- ✓ **React components** with TypeScript support (optional)
+- ✓ **Brand colors** included by default
+- ✓ **Works everywhere** - Next.js, Vite, Vue, vanilla HTML
 
 ## Quick Start
 
 ```bash
-# Initialize (optional - for React component generation)
-npx logocn@latest init
-
-# Add logos to your project
-npx logocn@latest add tesla apple palantir
-
-# That's it! Logos are in your project
+npx logocn@latest add apple google microsoft
 ```
 
-## Common Workflows
+That's it. The logos are now in `components/logos/`.
 
-### First time setup
-```bash
-npx logocn@latest init        # Set up for your framework
-npx logocn@latest add github   # Add your first logo
-```
+### React Components (optional)
 
-### Adding multiple logos
-```bash
-npx logocn@latest add tesla openai microsoft shadcn
-```
-
-### Finding and adding logos
-```bash
-npx logocn@latest search database    # Find database logos
-npx logocn@latest add postgresql     # Add the one you want
-```
-
-### Updating existing logos
-```bash
-npx logocn@latest update             # Update cache with latest logos
-npx logocn@latest remove oldlogo     # Remove old version
-npx logocn@latest add newlogo        # Add new version
-```
-
-## Installation
-
-### Use without installing (recommended)
+Want React components instead of just SVGs?
 
 ```bash
-npx logocn@latest add [logo-name]
+npx logocn@latest init   # One-time setup
+npx logocn@latest add tesla
 ```
 
-### Global installation
-
-```bash
-npm install -g logocn
-logocn add [logo-name]
-```
-
-## Commands
-
-### Initialize project
-
-Set up LogoCN for your framework with optimal configuration:
-
-```bash
-logocn init
-
-# Options:
-logocn init --force           # Force re-initialization
-logocn init --skip-install    # Skip dependency installation
-logocn init --yes            # Use defaults without prompts
-```
-
-### Add logos
-
-```bash
-# Add a single logo
-logocn add tesla
-
-# Add multiple logos
-logocn add apple google microsoft tesla
-
-# Interactive mode - search, browse, or select popular logos
-logocn add
-```
-
-### Remove logos
-
-```bash
-# Remove a single logo
-logocn remove tesla
-# or use alias
-logocn rm tesla
-
-# Remove multiple logos
-logocn remove apple google angular
-```
-
-### Search for logos
-
-```bash
-# Search by name or keyword
-logocn search google
-logocn search meta
-logocn search database
-```
-
-### List available logos
-
-```bash
-# List all logos (paginated, 50 per page)
-logocn list
-
-# View specific page
-logocn list --page 2
-
-# Search within list
-logocn list --search "meta"
-```
-
-### Update cache
-
-Update the Simple Icons metadata cache:
-
-```bash
-logocn update
-```
-
-### Configuration
-
-```bash
-# View all configuration
-logocn config --list
-
-# Get specific value
-logocn config --get logoDirectory
-
-# Set configuration value
-logocn config --set dir=./assets/logos
-
-# Reset to defaults
-logocn config --reset
-```
-
-## Framework Setup
-
-LogoCN works with any framework. Run `init` for optimal setup:
-
-```bash
-npx logocn@latest init
-```
-
-This will:
-- Detect your framework (Next.js, React, Vue, etc.)
-- Set up the best directory structure
-- Configure React component generation (if applicable)
-- Add TypeScript support (if detected)
-
-### Default directories by framework
-
-- **Next.js**: `components/logos`
-- **React**: `src/components/logos`
-- **Vue**: `src/components/logos`
-- **Angular**: `src/assets/logos`
-- **Others**: `logos`
-
-## Using logos in your project
-
-### As SVG files
-
-```jsx
-// Logos are saved as SVG files
-import appleLogo from './components/logos/apple.svg'
-
-<img src={appleLogo} alt="Apple" />
-```
-
-### As React components (after init)
-
-```jsx
-// Auto-generated index file with all logos
-import { AppleLogo, GoogleLogo } from '@/components/logos'
-
-// Use with size and color props
-<AppleLogo size={48} />
-<GoogleLogo size={32} color="#4285F4" />
-```
-
-### Component props
-
-All generated React components accept:
-- `size` - Width and height (number or string)
-- `color` - Fill color (defaults to brand color)
-- `width` - Custom width
-- `height` - Custom height
-- All standard SVG props
-
-## React Component Examples
-
-### Basic usage
-
-```jsx
-import { GithubLogo, TwitterLogo } from '@/components/logos'
-
-export function SocialLinks() {
-  return (
-    <div className="flex gap-4">
-      <GithubLogo size={24} />
-      <TwitterLogo size={24} />
-    </div>
-  )
-}
-```
-
-### With custom colors
+Now use them:
 
 ```jsx
 import { TeslaLogo } from '@/components/logos'
 
-// Override default brand color
-<TeslaLogo size={48} color="#CC0000" />
-
-// Use with Tailwind classes
-<TeslaLogo size={48} className="text-red-500" />
-
-// Dynamic colors
-<TeslaLogo size={48} color={isDark ? '#fff' : '#000'} />
+<TeslaLogo size={48} />
 ```
 
-### Responsive sizing
+## Usage
+
+### Basic SVG
 
 ```jsx
-import { AppleLogo } from '@/components/logos'
+import logo from './components/logos/github.svg'
 
-// Responsive sizes
-<AppleLogo className="w-8 h-8 md:w-12 md:h-12" />
-
-// Custom width/height
-<AppleLogo width={100} height={50} />
-
-// Using viewport units
-<AppleLogo size="5vw" />
+<img src={logo} alt="GitHub" />
 ```
 
-### With hover effects
+### React Component
 
 ```jsx
-import { SpotifyLogo } from '@/components/logos'
+import { GithubLogo, AppleLogo } from '@/components/logos'
 
-export function MusicPlayer() {
-  return (
-    <button className="group">
-      <SpotifyLogo 
-        size={32}
-        className="transition-colors group-hover:text-green-500"
-      />
-    </button>
-  )
-}
+// Default size and brand color
+<GithubLogo />
+
+// Custom size
+<AppleLogo size={48} />
+
+// Custom color
+<GithubLogo color="#fff" />
+
+// Tailwind classes
+<AppleLogo className="w-8 h-8 text-slate-900" />
 ```
 
-### With TypeScript
+### All Props
 
-```tsx
-import { FC } from 'react'
-import { GithubLogo, LinkedinLogo } from '@/components/logos'
-
-interface SocialLinkProps {
-  platform: 'github' | 'linkedin'
-  size?: number
-  color?: string
-}
-
-export const SocialLink: FC<SocialLinkProps> = ({ 
-  platform, 
-  size = 24, 
-  color 
-}) => {
-  const logos = {
-    github: GithubLogo,
-    linkedin: LinkedinLogo,
-  }
-  
-  const Logo = logos[platform]
-  
-  return <Logo size={size} color={color} />
-}
-```
-
-### Company showcase
-
-```jsx
-import { 
-  AppleLogo,
-  GoogleLogo,
-  MicrosoftLogo,
-  TeslaLogo,
-  AmazonLogo
-} from '@/components/logos'
-
-export function TrustedByCompanies() {
-  const companies = [
-    { Logo: AppleLogo, name: 'Apple' },
-    { Logo: GoogleLogo, name: 'Google' },
-    { Logo: MicrosoftLogo, name: 'Microsoft' },
-    { Logo: TeslaLogo, name: 'Tesla' },
-    { Logo: AmazonLogo, name: 'Amazon' },
-  ]
-  
-  return (
-    <div className="flex flex-wrap gap-8 items-center">
-      {companies.map(({ Logo, name }) => (
-        <div key={name} className="opacity-60 hover:opacity-100 transition-opacity">
-          <Logo size={48} />
-        </div>
-      ))}
-    </div>
-  )
-}
-```
-
-### Payment methods
-
-```jsx
-import { 
-  VisaLogo,
-  MastercardLogo,
-  PaypalLogo,
-  StripeLogo,
-  AppleLogo
-} from '@/components/logos'
-
-export function PaymentMethods() {
-  return (
-    <div className="flex gap-3">
-      <VisaLogo size={40} />
-      <MastercardLogo size={40} />
-      <PaypalLogo size={40} />
-      <StripeLogo size={40} />
-      <div className="flex items-center gap-1">
-        <AppleLogo size={20} />
-        <span>Pay</span>
-      </div>
-    </div>
-  )
-}
-```
-
-### Animated logos
-
-```jsx
-import { LoaderLogo } from '@/components/logos'
-
-export function Loading() {
-  return (
-    <div className="animate-spin">
-      <LoaderLogo size={32} />
-    </div>
-  )
-}
-
-// Or with custom animation
-export function PulsingLogo() {
-  return (
-    <div className="animate-pulse">
-      <HeartLogo size={32} color="#ef4444" />
-    </div>
-  )
-}
-```
-
-### With tooltips
-
-```jsx
-import { InfoLogo } from '@/components/logos'
-import { Tooltip } from '@/components/ui/tooltip'
-
-export function InfoButton() {
-  return (
-    <Tooltip content="Click for more information">
-      <button>
-        <InfoLogo size={16} />
-      </button>
-    </Tooltip>
-  )
-}
-
-
-## Uninstalling
-
-### Remove from project
-
-```bash
-# Clean up LogoCN files from current project
-logocn uninstall
-
-# Keep logos but remove config
-logocn uninstall --keep-logos
-
-# Skip confirmation prompts
-logocn uninstall --yes
-```
-
-### Global uninstall
-
-```bash
-# npm
-npm uninstall -g logocn
-
-# yarn
-yarn global remove logocn
-
-# pnpm
-pnpm remove -g logocn
-```
-
-### Manual cleanup
-
-If you need to manually clean up:
-
-```bash
-# Remove project config
-rm logocn.config.json
-
-# Remove logos (optional)
-rm -rf components/logos
-
-# Remove global cache
-rm -rf ~/.logocn
-```
+- `size` - Width and height (number or string)
+- `color` - Fill color (defaults to brand color)
+- `width` / `height` - Individual dimensions
+- `className` - CSS classes
+- All standard SVG props
 
 ## Examples
 
-### Next.js
+<details>
+<summary><strong>Next.js App</strong></summary>
 
 ```bash
 npx logocn@latest init
@@ -453,152 +90,221 @@ npx logocn@latest add github twitter linkedin
 ```
 
 ```jsx
-// pages/index.js
+// app/page.tsx
 import { GithubLogo, TwitterLogo, LinkedinLogo } from '@/components/logos'
 
 export default function Home() {
   return (
-    <div className="flex gap-4">
-      <GithubLogo size={32} />
-      <TwitterLogo size={32} />
-      <LinkedinLogo size={32} />
+    <footer className="flex gap-4">
+      <GithubLogo size={20} />
+      <TwitterLogo size={20} />
+      <LinkedinLogo size={20} />
+    </footer>
+  )
+}
+```
+</details>
+
+<details>
+<summary><strong>Company Logos Section</strong></summary>
+
+```jsx
+import { AppleLogo, GoogleLogo, MicrosoftLogo } from '@/components/logos'
+
+const companies = [
+  { name: 'Apple', Logo: AppleLogo },
+  { name: 'Google', Logo: GoogleLogo },
+  { name: 'Microsoft', Logo: MicrosoftLogo },
+]
+
+export function TrustedBy() {
+  return (
+    <div className="flex gap-12 items-center opacity-60">
+      {companies.map(({ name, Logo }) => (
+        <Logo key={name} size={48} />
+      ))}
     </div>
   )
 }
 ```
+</details>
 
-### React + Vite
-
-```bash
-npx logocn@latest init
-npx logocn@latest add react vite typescript
-```
+<details>
+<summary><strong>Payment Methods</strong></summary>
 
 ```jsx
-// src/App.jsx
-import { ReactLogo, ViteLogo, TypescriptLogo } from './components/logos'
+import { VisaLogo, MastercardLogo, PaypalLogo } from '@/components/logos'
 
-function App() {
+export function PaymentMethods() {
   return (
     <>
-      <ReactLogo size={48} />
-      <ViteLogo size={48} />
-      <TypescriptLogo size={48} />
+      <VisaLogo size={40} />
+      <MastercardLogo size={40} />
+      <PaypalLogo size={40} />
     </>
   )
 }
 ```
+</details>
 
-### Vue
+<details>
+<summary><strong>With TypeScript</strong></summary>
 
-```bash
-npx logocn@latest init
-npx logocn@latest add vue nuxt vuetify
+```tsx
+import { type FC } from 'react'
+import { GithubLogo, LinkedinLogo } from '@/components/logos'
+
+const logoMap = {
+  github: GithubLogo,
+  linkedin: LinkedinLogo,
+} as const
+
+interface SocialLinkProps {
+  platform: keyof typeof logoMap
+  size?: number
+}
+
+export const SocialLink: FC<SocialLinkProps> = ({ platform, size = 24 }) => {
+  const Logo = logoMap[platform]
+  return <Logo size={size} />
+}
 ```
-
-```vue
-<!-- App.vue -->
-<template>
-  <div>
-    <img src="@/components/logos/vue.svg" alt="Vue" />
-    <img src="@/components/logos/nuxt.svg" alt="Nuxt" />
-  </div>
-</template>
-```
+</details>
 
 ## Available Logos
 
-LogoCN provides access to 2,800+ logos from Simple Icons, including:
+2,800+ logos from [Simple Icons](https://simpleicons.org) including:
 
-- **Tech Companies**: Apple, Google, Microsoft, Amazon, Meta, IBM, Intel, Samsung
-- **Development**: React, Vue, Angular, Node.js, Python, TypeScript, Go, Rust
-- **Databases**: PostgreSQL, MongoDB, MySQL, Redis, SQLite, Elasticsearch
-- **Cloud Services**: AWS, Google Cloud, Azure, Vercel, Netlify, Cloudflare
-- **Payment**: Stripe, PayPal, Square, Visa, Mastercard, American Express
-- **Social Media**: Twitter/X, LinkedIn, GitHub, Discord, Slack, Instagram
-- **Design Tools**: Figma, Sketch, Adobe, Canva, Framer, InVision
-- **And thousands more...**
-
-Use `logocn list` to see all available logos or `logocn search [keyword]` to find specific ones.
-
-## Special Cases
-
-### Logos starting with numbers
-
-Logos like "1password" or "4chan" are prefixed with "Lcn" in React components:
-
-```jsx
-import { Lcn1passwordLogo, Lcn4chanLogo } from '@/components/logos'
-```
-
-## Troubleshooting
-
-### "Logo not found"
-- Check spelling: `logocn search [partial-name]`
-- View all available: `logocn list`
-- Update cache: `logocn update`
-
-### "Permission denied"
-- Check write permissions for the logo directory
-- Try a different directory: `logocn config --set dir=./public/logos`
-
-### React components not generating
-- Run `logocn init` to set up your project
-- Ensure you have `@svgr/webpack` installed (auto-installed by init)
-
-## Command Reference
-
-| Command | Description | Options |
-|---------|-------------|---------|
-| `init` | Initialize LogoCN in your project | `--force`, `--skip-install`, `--yes` |
-| `add [logos...]` | Add logo(s) to project | Interactive mode if no args |
-| `remove [logos...]` | Remove logo(s) from project | Alias: `rm` |
-| `list` | List all available logos (paginated) | `--page <n>`, `--search <query>` |
-| `search <query>` | Search for logos | Required: query string |
-| `update` | Update Simple Icons cache | None |
-| `config` | Manage configuration | `--list`, `--get <key>`, `--set <key=val>`, `--reset` |
-
-## Development
+**Tech:** Apple, Google, Microsoft, Amazon, Tesla, OpenAI, Meta  
+**Dev Tools:** GitHub, GitLab, VS Code, Figma, Vercel, Netlify  
+**Languages:** JavaScript, TypeScript, Python, Go, Rust, Swift  
+**Frameworks:** React, Vue, Angular, Next.js, Nuxt, Svelte  
+**Databases:** PostgreSQL, MongoDB, MySQL, Redis, Supabase  
+**Payment:** Stripe, PayPal, Square, Visa, Mastercard  
+**Social:** Twitter/X, LinkedIn, Discord, Slack, Reddit  
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/logocn.git
-cd logocn
+# See all available logos
+npx logocn@latest list
 
-# Install dependencies
-npm install
-
-# Build
-npm run build
-
-# Test locally
-npm link
-logocn add react
+# Search for specific logos
+npx logocn@latest search database
 ```
 
-## How it works
+## Commands
 
-1. **Simple Icons CDN**: Fetches SVG logos from the Simple Icons CDN
-2. **Smart caching**: Caches logo metadata for 7 days for offline support
-3. **Direct downloads**: Downloads SVG files directly to your project
-4. **No dependencies**: Logos become part of your codebase
-5. **Component generation**: Optionally generates React components with TypeScript
+### Essential Commands
+
+```bash
+npx logocn@latest add [logos...]    # Add logos to your project
+npx logocn@latest remove [logos...]  # Remove logos
+npx logocn@latest search <query>     # Find logos
+npx logocn@latest list               # Browse all logos
+```
+
+### Setup & Config
+
+```bash
+npx logocn@latest init               # Set up React components
+npx logocn@latest config             # View/change settings
+npx logocn@latest uninstall          # Clean up LogoCN
+```
+
+<details>
+<summary><strong>All Command Options</strong></summary>
+
+#### `init`
+```bash
+logocn init --force           # Reinitialize
+logocn init --skip-install    # Skip dependency installation
+logocn init --yes            # Accept all defaults
+```
+
+#### `add`
+```bash
+logocn add tesla              # Add single logo
+logocn add apple google       # Add multiple
+logocn add                    # Interactive mode
+```
+
+#### `config`
+```bash
+logocn config --list                    # Show all settings
+logocn config --get logoDirectory       # Get specific value
+logocn config --set dir=./public/logos  # Change directory
+logocn config --reset                   # Reset to defaults
+```
+
+#### `list`
+```bash
+logocn list --page 2          # View specific page
+logocn list --search meta     # Filter results
+```
+
+#### `uninstall`
+```bash
+logocn uninstall --yes        # Skip confirmation
+logocn uninstall --keep-logos # Keep SVG files
+```
+</details>
+
+## FAQ
+
+<details>
+<summary><strong>Where are logos saved?</strong></summary>
+
+By default in `components/logos/`. Run `logocn init` to auto-detect the best location for your framework, or use `logocn config --set dir=./your/path` to customize.
+</details>
+
+<details>
+<summary><strong>Do I need to install LogoCN?</strong></summary>
+
+No! Just use `npx logocn@latest`. If you prefer, you can install globally with `npm i -g logocn`.
+</details>
+
+<details>
+<summary><strong>How do React components work?</strong></summary>
+
+Run `logocn init` once. This sets up automatic component generation. Then every logo you add gets both an SVG file and a `.tsx` component with TypeScript types and brand colors.
+</details>
+
+<details>
+<summary><strong>What about logos starting with numbers?</strong></summary>
+
+Logos like "1password" become `Lcn1passwordLogo` components (prefixed with "Lcn") to be valid JavaScript identifiers.
+</details>
+
+<details>
+<summary><strong>Can I use this with Vue/Angular/etc?</strong></summary>
+
+Yes! LogoCN saves standard SVG files that work everywhere. React component generation is optional.
+</details>
+
+<details>
+<summary><strong>Logo not found?</strong></summary>
+
+Try: `logocn search [partial-name]` to find the exact name, or `logocn update` to refresh the logo cache.
+</details>
+
+## Installation
+
+While `npx logocn@latest` is recommended, you can also install globally:
+
+```bash
+# npm
+npm install -g logocn
+
+# pnpm  
+pnpm add -g logocn
+
+# yarn
+yarn global add logocn
+```
 
 ## License
 
-MIT
-
-## Author
-
-**Created by [@5aikat](https://x.com/5aikat)**
-
-## Credits
-
-- Logo source: [Simple Icons](https://simpleicons.org)
-- Inspired by: [shadcn/ui](https://ui.shadcn.com)
+MIT © [@5aikat](https://x.com/5aikat)
 
 ---
 
-<p align="center">
-  Made with ❤️ by developers, for developers
-</p>
+<sub>Logo source: [Simple Icons](https://simpleicons.org) • Inspired by [shadcn/ui](https://ui.shadcn.com)</sub>
