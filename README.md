@@ -1,5 +1,7 @@
 # logoCN
 
+![logoCN - Add SVG logos to your project with a single command](https://raw.githubusercontent.com/shokks/logocn/main/public/opengraph.png)
+
 Add high-quality SVG logos to your project. Just like shadcn/ui, but for logos.
 
 ```bash
