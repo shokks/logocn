@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-const SIMPLE_ICONS_CDN = 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons';
+const SIMPLE_ICONS_CDN = 'https://unpkg.com/simple-icons@latest/icons';
 
 export class SimpleIconsService {
   /**
