@@ -31,6 +31,30 @@ npm run release:major   # Major release (0.1.0 → 1.0.0)
 npm run changelog       # Manually generate changelog from commits
 ```
 
+## Release Management & Changelog
+
+### Important: Changelog Updates
+**Every npm release MUST include proper changelog documentation:**
+1. The changelog is automatically generated when using `npm run release:*` commands
+2. However, always verify that CHANGELOG.md was properly updated after each release
+3. If the automatic generation fails, manually run `npm run changelog` before publishing
+4. Each version entry should include meaningful commit messages describing changes
+
+### Release Process
+1. Make your changes and commit them with descriptive messages
+2. Run the appropriate release command (`npm run release:beta/patch/minor/major`)
+3. The changelog will be automatically generated via the `version` script
+4. Verify CHANGELOG.md includes the new version with all changes
+5. The release will be automatically published to npm
+
+### Manual Changelog Update
+If you need to update the changelog manually:
+```bash
+npm run changelog       # Generate changelog from git commits
+git add CHANGELOG.md
+git commit -m "docs: update changelog for version X.X.X"
+```
+
 ## Architecture & Key Files
 
 ### Project Structure
