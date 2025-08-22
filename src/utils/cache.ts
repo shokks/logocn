@@ -6,7 +6,7 @@ import chalk from 'chalk';
 
 const CACHE_DIR = path.join(os.homedir(), '.logocn', 'cache');
 const METADATA_FILE = path.join(CACHE_DIR, 'simple-icons.json');
-const SIMPLE_ICONS_URL = 'https://cdn.jsdelivr.net/npm/simple-icons@latest/_data/simple-icons.json';
+const SIMPLE_ICONS_URL = 'https://unpkg.com/simple-icons@latest/data/simple-icons.json';
 const CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 export interface SimpleIcon {
