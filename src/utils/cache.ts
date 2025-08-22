@@ -6,7 +6,7 @@ import chalk from 'chalk';
 
 const CACHE_DIR = path.join(os.homedir(), '.logocn', 'cache');
 const METADATA_FILE = path.join(CACHE_DIR, 'simple-icons.json');
-const SIMPLE_ICONS_URL = 'https://cdn.jsdelivr.net/npm/simple-icons@v9/_data/simple-icons.json';
+const SIMPLE_ICONS_URL = 'https://cdn.jsdelivr.net/npm/simple-icons@latest/_data/simple-icons.json';
 const CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 export interface SimpleIcon {
@@ -70,13 +70,15 @@ export class CacheManager {
         throw new Error(`Failed to fetch: ${response.statusText}`);
       }
       
-      const data = await response.json() as SimpleIconsData;
+      const icons = await response.json() as SimpleIcon[];
       
-      // Add generated slugs for icons that don't have them
-      data.icons = data.icons.map(icon => ({
-        ...icon,
-        slug: icon.slug || this.generateSlug(icon.title)
-      }));
+      // Wrap in expected structure and add generated slugs
+      const data: SimpleIconsData = {
+        icons: icons.map(icon => ({
+          ...icon,
+          slug: icon.slug || this.generateSlug(icon.title)
+        }))
+      };
       
       await fs.writeJSON(METADATA_FILE, data, { spaces: 2 });
       
