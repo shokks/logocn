@@ -92,7 +92,7 @@ logocn add react
 # Add multiple logos
 logocn add react vue angular nodejs
 
-# Interactive mode - browse and select
+# Interactive mode - search, browse, or select popular logos
 logocn add
 ```
 
@@ -112,18 +112,18 @@ logocn remove react vue angular
 
 ```bash
 # Search by name or keyword
-logocn search social
-logocn search payment
-logocn search "google"
+logocn search google
+logocn search meta
+logocn search database
 ```
 
 ### List available logos
 
 ```bash
-# List all logos
+# List all logos (paginated, 50 per page)
 logocn list
 
-# With pagination
+# View specific page
 logocn list --page 2
 
 # Search within list
@@ -271,16 +271,20 @@ npx logocn@latest add vue nuxt vuetify
 </template>
 ```
 
-## Logo Categories
+## Available Logos
 
-- **Tech**: Apple, Google, Microsoft, Amazon, Meta
-- **Development**: React, Vue, Angular, Node.js, Python
-- **Database**: PostgreSQL, MongoDB, MySQL, Redis
-- **Cloud**: AWS, Google Cloud, Azure, Vercel
-- **Payment**: Stripe, PayPal, Square, Visa
-- **Social**: Twitter/X, LinkedIn, GitHub, Discord
-- **Design**: Figma, Sketch, Adobe, Canva
-- **And 2,800+ more...**
+LogoCN provides access to 2,800+ logos from Simple Icons, including:
+
+- **Tech Companies**: Apple, Google, Microsoft, Amazon, Meta, IBM, Intel, Samsung
+- **Development**: React, Vue, Angular, Node.js, Python, TypeScript, Go, Rust
+- **Databases**: PostgreSQL, MongoDB, MySQL, Redis, SQLite, Elasticsearch
+- **Cloud Services**: AWS, Google Cloud, Azure, Vercel, Netlify, Cloudflare
+- **Payment**: Stripe, PayPal, Square, Visa, Mastercard, American Express
+- **Social Media**: Twitter/X, LinkedIn, GitHub, Discord, Slack, Instagram
+- **Design Tools**: Figma, Sketch, Adobe, Canva, Framer, InVision
+- **And thousands more...**
+
+Use `logocn list` to see all available logos or `logocn search [keyword]` to find specific ones.
 
 ## Special Cases
 
@@ -312,9 +316,9 @@ import { Lcn1passwordLogo, Lcn4chanLogo } from '@/components/logos'
 | Command | Description | Options |
 |---------|-------------|---------|
 | `init` | Initialize LogoCN in your project | `--force`, `--skip-install`, `--yes` |
-| `add [logos...]` | Add logo(s) to project | Interactive if no args |
+| `add [logos...]` | Add logo(s) to project | Interactive mode if no args |
 | `remove [logos...]` | Remove logo(s) from project | Alias: `rm` |
-| `list` | List all available logos | `--page <n>`, `--search <query>` |
+| `list` | List all available logos (paginated) | `--page <n>`, `--search <query>` |
 | `search <query>` | Search for logos | Required: query string |
 | `update` | Update Simple Icons cache | None |
 | `config` | Manage configuration | `--list`, `--get <key>`, `--set <key=val>`, `--reset` |
