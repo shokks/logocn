@@ -11,8 +11,8 @@ export async function generateExportFile(projectPath: string = process.cwd()): P
   const projectConfig = await loadProjectConfig(projectPath);
   
   if (!projectConfig) {
-    // No project config, skip generation
-    return;
+    // Throw a clear error instead of silently returning
+    throw new Error('No project configuration found. Run "logocn init" first to enable component generation.');
   }
 
   const logoDir = path.join(projectPath, projectConfig.logoDirectory);

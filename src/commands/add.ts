@@ -108,9 +108,15 @@ export async function handleAdd(logos: string[]): Promise<void> {
       try {
         await generateExportFile();
         exportSpinner.succeed('Generated export file');
-      } catch (error) {
-        exportSpinner.warn('Failed to generate export file');
-        console.log(chalk.gray('  Export file will be created when project is initialized'));
+      } catch (error: any) {
+        if (await isZeroConfigMode()) {
+          exportSpinner.warn('Component generation requires initialization');
+          console.log(chalk.cyan('  Run "logocn init" to generate React components'));
+          console.log(chalk.gray('  Your SVG files are ready at: ' + logoDir.replace(process.cwd() + '/', '')));
+        } else {
+          exportSpinner.warn('Failed to generate export file');
+          console.log(chalk.gray('  Error: ' + error.message));
+        }
       }
     }
     

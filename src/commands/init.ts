@@ -114,6 +114,20 @@ export async function handleInit(options: InitOptions = {}): Promise<void> {
     const libDir = path.dirname(path.join(projectPath, projectConfig.exportFile));
     await fs.ensureDir(libDir);
     
+    // Generate export file for any existing logos
+    try {
+      const existingFiles = await fs.readdir(logoPath);
+      const svgFiles = existingFiles.filter(f => f.endsWith('.svg'));
+      if (svgFiles.length > 0) {
+        const exportSpinner = ora('Generating components for existing logos...').start();
+        await generateExportFile(projectPath);
+        exportSpinner.succeed(`Generated components for ${svgFiles.length} existing logo${svgFiles.length === 1 ? '' : 's'}`);
+      }
+    } catch (error) {
+      // Non-critical error, just log it
+      console.log(chalk.gray('  Could not generate components for existing logos'));
+    }
+    
     console.log();
     console.log(chalk.green.bold('  ✅ LogoCN initialized successfully!'));
     console.log();
