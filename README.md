@@ -33,7 +33,7 @@ That's it. The logos are now in `components/logos/`.
 Want React components instead of just SVGs?
 
 ```bash
-npx logocn@latest init   # One-time setup
+npx logocn@latest init   # One-time setup (generates components for any existing logos)
 npx logocn@latest add tesla
 ```
 
@@ -44,6 +44,8 @@ import { TeslaLogo } from '@/components/logos'
 
 <TeslaLogo size={48} />
 ```
+
+**Note:** If you've already added logos before running `init`, don't worry! The init command will automatically generate components for all existing logos.
 
 ## Usage
 
@@ -267,7 +269,9 @@ No! Just use `npx logocn@latest`. If you prefer, you can install globally with `
 <details>
 <summary><strong>How do React components work?</strong></summary>
 
-Run `logocn init` once. This sets up automatic component generation. Then every logo you add gets both an SVG file and a `.tsx` component with TypeScript types and brand colors.
+Run `logocn init` once. This sets up automatic component generation. Then every logo you add gets both an SVG file and a React component with TypeScript types and brand colors. 
+
+If you've already added logos before initialization, `init` will generate components for all existing logos automatically.
 </details>
 
 <details>
