@@ -246,6 +246,7 @@ logocn init --yes            # Accept all defaults
 logocn add tesla              # Add single logo
 logocn add apple google       # Add multiple
 logocn add                    # Interactive mode
+logocn add tesla --keep-svgs  # Keep SVG files after generating components
 ```
 
 #### `config`
@@ -253,6 +254,7 @@ logocn add                    # Interactive mode
 logocn config --list                    # Show all settings
 logocn config --get logoDirectory       # Get specific value
 logocn config --set dir=./public/logos  # Change directory
+logocn config --set keepSvgs=false      # Remove SVGs after component generation
 logocn config --reset                   # Reset to defaults
 ```
 
@@ -295,6 +297,18 @@ If you've already added logos before initialization, `init` will generate compon
 <summary><strong>What about logos starting with numbers?</strong></summary>
 
 Logos like "1password" become `Lcn1passwordLogo` components (prefixed with "Lcn") to be valid JavaScript identifiers.
+</details>
+
+<details>
+<summary><strong>Can I remove SVG files after generating components?</strong></summary>
+
+Yes! By default, LogoCN removes the original SVG files after generating React components to save space. The components contain all the SVG data inline. You can control this behavior:
+
+- During init: You'll be asked if you want to keep original SVG files
+- Via config: `logocn config --set keepSvgs=true` to keep SVGs
+- Per command: `logocn add tesla --keep-svgs` to keep SVGs for that operation
+
+This helps reduce bundle size since the component already contains the full SVG.
 </details>
 
 <details>
