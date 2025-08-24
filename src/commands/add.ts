@@ -49,6 +49,7 @@ export async function handleAdd(logos: string[], options: AddOptions = {}): Prom
     spinner.text = 'Preparing to download logos...';
     
     const results: DownloadResult[] = [];
+    const newlyAddedFiles: string[] = []; // Track only newly downloaded files
     
     // Process each logo
     for (let i = 0; i < logos.length; i++) {
@@ -95,6 +96,8 @@ export async function handleAdd(logos: string[], options: AddOptions = {}): Prom
           logoName: logo.name,
           filePath
         });
+        // Track this as a newly added file
+        newlyAddedFiles.push(filePath);
       } catch (error: any) {
         results.push({
           success: false,
@@ -119,17 +122,22 @@ export async function handleAdd(logos: string[], options: AddOptions = {}): Prom
         const shouldKeepSvgs = options.keepSvgs !== undefined ? options.keepSvgs : projectConfig?.keepOriginalSvgs;
         
         // Default to false (remove SVGs) if not specified
-        if (projectConfig && shouldKeepSvgs === false) {
-          const cleanupSpinner = ora('Removing original SVG files...').start();
+        if (projectConfig && shouldKeepSvgs === false && newlyAddedFiles.length > 0) {
+          const cleanupSpinner = ora('Removing newly added SVG files...').start();
           try {
             let removedCount = 0;
-            for (const result of successful) {
-              if (result.filePath && await fs.pathExists(result.filePath)) {
-                await fs.remove(result.filePath);
+            // Only remove files that were newly downloaded in this operation
+            for (const filePath of newlyAddedFiles) {
+              if (await fs.pathExists(filePath)) {
+                await fs.remove(filePath);
                 removedCount++;
               }
             }
-            cleanupSpinner.succeed(`Removed ${removedCount} original SVG file${removedCount === 1 ? '' : 's'} (components generated)`);
+            if (removedCount > 0) {
+              cleanupSpinner.succeed(`Removed ${removedCount} newly added SVG file${removedCount === 1 ? '' : 's'} (components generated)`);
+            } else {
+              cleanupSpinner.stop();
+            }
           } catch (cleanupError: any) {
             cleanupSpinner.warn('Failed to remove some SVG files');
             console.log(chalk.gray('  Error: ' + cleanupError.message));
