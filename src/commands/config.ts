@@ -2,7 +2,8 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import path from 'path';
 import { loadConfig, saveConfig, resetConfig } from '../utils/config.js';
-import { Config } from '../types/index.js';
+import { loadProjectConfig, saveProjectConfig } from '../utils/frameworks.js';
+import { Config, ProjectConfig } from '../types/index.js';
 
 interface ConfigOptions {
   set?: string;
@@ -77,11 +78,27 @@ export async function handleConfig(options: ConfigOptions): Promise<void> {
         config.useColor = value.toLowerCase() === 'true';
         await saveConfig(config);
         console.log(chalk.green(`✓ Use color set to: ${config.useColor}`));
+      } else if (key === 'keepOriginalSvgs' || key === 'keepSvgs') {
+        // Handle project config setting
+        const projectConfig = await loadProjectConfig();
+        if (!projectConfig) {
+          console.error(chalk.red('✗ No project configuration found. Run "logocn init" first.'));
+          process.exit(1);
+        }
+        projectConfig.keepOriginalSvgs = value.toLowerCase() === 'true';
+        await saveProjectConfig(projectConfig);
+        console.log(chalk.green(`✓ Keep original SVGs set to: ${projectConfig.keepOriginalSvgs}`));
+        if (!projectConfig.keepOriginalSvgs) {
+          console.log(chalk.gray('  SVG files will be removed after component generation'));
+        } else {
+          console.log(chalk.gray('  SVG files will be kept after component generation'));
+        }
       } else {
         console.error(chalk.red(`✗ Unknown configuration key: ${key}`));
         console.log(chalk.gray('Available keys:'));
         console.log(chalk.gray('  • logoDirectory (or dir) - Where to save logos'));
         console.log(chalk.gray('  • useColor (or color) - Use colored output (true/false)'));
+        console.log(chalk.gray('  • keepOriginalSvgs (or keepSvgs) - Keep SVG files after generating components (true/false)'));
         process.exit(1);
       }
       return;
@@ -102,6 +119,16 @@ export async function handleConfig(options: ConfigOptions): Promise<void> {
       console.log(chalk.cyan('Use Color Output:'));
       console.log(`  ${config.useColor ? chalk.green('true') : chalk.red('false')}`);
       
+      // Show project config if available
+      const projectConfig = await loadProjectConfig();
+      if (projectConfig) {
+        console.log();
+        console.log(chalk.cyan('Keep Original SVGs:'));
+        const keepSvgs = projectConfig.keepOriginalSvgs ?? false;
+        console.log(`  ${keepSvgs ? chalk.green('true') : chalk.red('false')}`);
+        console.log(chalk.gray(`  ${keepSvgs ? 'SVG files are kept after component generation' : 'SVG files are removed after component generation'}`));
+      }
+      
       if (config.registry) {
         console.log();
         console.log(chalk.cyan('Custom Registry:'));
@@ -111,9 +138,10 @@ export async function handleConfig(options: ConfigOptions): Promise<void> {
       console.log();
       console.log(chalk.gray('─'.repeat(50)));
       console.log(chalk.dim('Usage:'));
-      console.log(chalk.dim('  Set directory:  logocn config --set dir=./assets/logos'));
-      console.log(chalk.dim('  Get value:      logocn config --get logoDirectory'));
-      console.log(chalk.dim('  Reset:          logocn config --reset'));
+      console.log(chalk.dim('  Set directory:    logocn config --set dir=./assets/logos'));
+      console.log(chalk.dim('  Keep SVG files:   logocn config --set keepSvgs=true'));
+      console.log(chalk.dim('  Get value:        logocn config --get logoDirectory'));
+      console.log(chalk.dim('  Reset:            logocn config --reset'));
       return;
     }
     

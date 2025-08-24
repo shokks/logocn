@@ -7,12 +7,12 @@ import figlet from 'figlet';
 function gradientText(text: string): string {
   const lines = text.split('\n');
   const colors = [
-    chalk.hex('#00D9FF'), // Bright cyan
-    chalk.hex('#00C4E6'), // Cyan
-    chalk.hex('#00AFCC'), // Darker cyan
-    chalk.hex('#0099B3'), // Even darker cyan
-    chalk.hex('#008499'), // Deep cyan
-    chalk.hex('#006F80'), // Deepest cyan
+    chalk.hex('#10b981'), // Emerald 500 (matching logo.svg)
+    chalk.hex('#34d399'), // Emerald 400
+    chalk.hex('#6ee7b7'), // Emerald 300
+    chalk.hex('#a7f3d0'), // Emerald 200
+    chalk.hex('#d1fae5'), // Emerald 100
+    chalk.hex('#ecfdf5'), // Emerald 50
   ];
   
   return lines.map((line, index) => {
@@ -39,19 +39,19 @@ export function displayBanner(): void {
   
   // Add a stylish underline
   const width = logo.split('\n')[0].length;
-  console.log(chalk.hex('#006F80')('━'.repeat(Math.min(width, 60))));
+  console.log(chalk.hex('#059669')('━'.repeat(Math.min(width, 60)))); // Emerald 600
   
   // Add tagline with custom styling
   console.log();
   console.log(
-    chalk.hex('#00D9FF')('  ✨ ') + 
+    chalk.hex('#10b981')('  ✨ ') + 
     chalk.bold.white('Add SVG logos to your project ') +
-    chalk.hex('#00D9FF')('with style')
+    chalk.hex('#10b981')('with style')
   );
   console.log(
-    chalk.hex('#0099B3')('  ⚡ ') + 
-    chalk.gray('2,800+ icons • ') +
-    chalk.hex('#00C4E6')('Simple Icons CDN • ') +
+    chalk.hex('#059669')('  ⚡ ') + 
+    chalk.gray('3,300+ icons • ') +
+    chalk.hex('#34d399')('Simple Icons CDN • ') +
     chalk.gray('Zero config')
   );
   console.log();
@@ -63,9 +63,9 @@ export function displayBanner(): void {
 export function displayCompactBanner(): void {
   const text = 'LogoCN';
   const gradient = [
-    chalk.hex('#00D9FF'),
-    chalk.hex('#00AFCC'),
-    chalk.hex('#008499'),
+    chalk.hex('#10b981'), // Emerald 500
+    chalk.hex('#059669'), // Emerald 600
+    chalk.hex('#047857'), // Emerald 700
   ];
   
   const colored = text.split('').map((char, i) => {
@@ -102,33 +102,33 @@ export function boxMessage(title: string, lines: string[]): void {
   const width = Math.min(maxLength + 4, 60);
   
   // Top border
-  console.log(chalk.hex('#00D9FF')('  ╭' + '─'.repeat(width - 2) + '╮'));
+  console.log(chalk.hex('#10b981')('  ╭' + '─'.repeat(width - 2) + '╮'));
   
   // Title
   const titlePadding = Math.floor((width - 4 - title.length) / 2);
   console.log(
-    chalk.hex('#00D9FF')('  │') + 
+    chalk.hex('#10b981')('  │') + 
     ' '.repeat(titlePadding) + 
     chalk.bold.white(title) + 
     ' '.repeat(width - 4 - titlePadding - title.length) + 
-    chalk.hex('#00D9FF')('│')
+    chalk.hex('#10b981')('│')
   );
   
   // Separator
-  console.log(chalk.hex('#00D9FF')('  ├' + '─'.repeat(width - 2) + '┤'));
+  console.log(chalk.hex('#10b981')('  ├' + '─'.repeat(width - 2) + '┤'));
   
   // Content lines
   lines.forEach(line => {
     const cleanLine = line.replace(/\x1b\[[0-9;]*m/g, '');
     const padding = width - 4 - cleanLine.length;
     console.log(
-      chalk.hex('#00D9FF')('  │ ') + 
+      chalk.hex('#10b981')('  │ ') + 
       line + 
       ' '.repeat(Math.max(0, padding)) + 
-      chalk.hex('#00D9FF')(' │')
+      chalk.hex('#10b981')(' │')
     );
   });
   
   // Bottom border
-  console.log(chalk.hex('#00D9FF')('  ╰' + '─'.repeat(width - 2) + '╯'));
+  console.log(chalk.hex('#10b981')('  ╰' + '─'.repeat(width - 2) + '╯'));
 }
