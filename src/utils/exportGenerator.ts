@@ -99,6 +99,8 @@ import * as React from 'react'
     writeStream.write(`export interface LogoProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string
   color?: string
+  width?: number | string
+  height?: number | string
 }
 
 `);
