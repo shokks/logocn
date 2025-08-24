@@ -5,6 +5,39 @@ import { loadProjectConfig } from './frameworks.js';
 import { RegistryManager } from './registry.js';
 
 /**
+ * Parse existing components from index.tsx to preserve them
+ */
+async function parseExistingComponents(indexPath: string): Promise<Array<{name: string, content: string, brandColor: string}>> {
+  if (!(await fs.pathExists(indexPath))) {
+    return [];
+  }
+
+  const content = await fs.readFile(indexPath, 'utf-8');
+  const components: Array<{name: string, content: string, brandColor: string}> = [];
+  
+  // Regex to match component functions and extract SVG content
+  const componentRegex = /export function (\w+Logo)\(\{[^}]*\}\s*(?::\s*LogoProps)?\)\s*\{[^}]*return\s*\(\s*(.*?)\s*\)\s*\}/gs;
+  
+  let match;
+  while ((match = componentRegex.exec(content)) !== null) {
+    const componentName = match[1];
+    const svgContent = match[2].trim();
+    
+    // Extract brand color from the component definition
+    const colorMatch = content.match(new RegExp(`export function ${componentName}\\(\\{[^}]*color = '([^']*)'`));
+    const brandColor = colorMatch ? colorMatch[1] : '#000000';
+    
+    components.push({
+      name: componentName,
+      content: svgContent,
+      brandColor
+    });
+  }
+  
+  return components;
+}
+
+/**
  * Generate React component files for logos
  */
 export async function generateExportFile(projectPath: string = process.cwd()): Promise<void> {
@@ -16,13 +49,19 @@ export async function generateExportFile(projectPath: string = process.cwd()): P
   }
 
   const logoDir = path.join(projectPath, projectConfig.logoDirectory);
+  const isTypeScript = projectConfig.typescript;
+  const indexFileName = isTypeScript ? 'index.tsx' : 'index.jsx';
+  const indexPath = path.join(logoDir, indexFileName);
 
   // Ensure logo directory exists
   if (!(await fs.pathExists(logoDir))) {
     return;
   }
 
-  // Get all SVG files
+  // Parse existing components to preserve them
+  const existingComponents = await parseExistingComponents(indexPath);
+
+  // Get all SVG files for new components
   const files = await fs.readdir(logoDir);
   const svgFiles = files
     .filter(file => file.endsWith('.svg'))
@@ -33,40 +72,44 @@ export async function generateExportFile(projectPath: string = process.cwd()): P
       key: path.basename(file, '.svg').toLowerCase().replace(/[^a-z0-9]/g, '')
     }));
 
-  // Always generate/regenerate the index file
-  // If no SVG files exist, we need to create an empty index file or remove it
-  if (svgFiles.length === 0) {
-    // Remove the index file if no logos exist
-    const isTypeScript = projectConfig.typescript;
-    const indexFileName = isTypeScript ? 'index.tsx' : 'index.jsx';
-    const indexPath = path.join(logoDir, indexFileName);
-    
-    if (await fs.pathExists(indexPath)) {
-      await fs.remove(indexPath);
-    }
-    return;
-  }
+  // Create a map of existing component names for deduplication
+  const existingComponentNames = new Set(existingComponents.map(c => c.name));
 
-  // Get brand colors from registry
+  // Get brand colors from registry for new components
   const registry = new RegistryManager();
   const logoColors: Record<string, string> = {};
   
-  for (const { name } of svgFiles) {
+  // Filter out SVG files that already have components
+  const newSvgFiles = svgFiles.filter(({ key }) => {
+    const componentName = `${capitalize(key)}Logo`;
+    return !existingComponentNames.has(componentName);
+  });
+  
+  for (const { name } of newSvgFiles) {
     const logo = await registry.findByName(name);
     if (logo) {
       logoColors[name] = logo.hex;
     }
   }
 
-  // Generate single file with all React components
-  await generateSingleComponentFile(svgFiles, projectConfig, projectPath, logoColors);
+  // If we have no existing components and no new SVG files, remove the index file
+  if (existingComponents.length === 0 && newSvgFiles.length === 0) {
+    if (await fs.pathExists(indexPath)) {
+      await fs.remove(indexPath);
+    }
+    return;
+  }
+
+  // Generate single file with all React components (existing + new)
+  await generateSingleComponentFile(existingComponents, newSvgFiles, projectConfig, projectPath, logoColors);
 }
 
 /**
  * Generate a single file with all React components using streaming for scalability
  */
 async function generateSingleComponentFile(
-  svgFiles: Array<{ filename: string; name: string; key: string }>,
+  existingComponents: Array<{name: string, content: string, brandColor: string}>,
+  newSvgFiles: Array<{ filename: string; name: string; key: string }>,
   projectConfig: ProjectConfig,
   projectPath: string,
   logoColors: Record<string, string>
@@ -106,8 +149,42 @@ import * as React from 'react'
 `);
   }
 
-  // Process each logo one at a time to avoid loading all into memory
-  for (const { filename, name, key } of svgFiles) {
+  // Write existing components first
+  for (const { name: componentName, content: svgContent, brandColor } of existingComponents) {
+    // Write the existing component directly with preserved content and color
+    const componentCode = isTypeScript 
+      ? `export function ${componentName}({ 
+  size = 24,
+  color = '${brandColor}',
+  width, 
+  height, 
+  ...props 
+}: LogoProps) {
+  return (
+    ${svgContent}
+  )
+}
+
+`
+      : `export function ${componentName}({ 
+  size = 24,
+  color = '${brandColor}',
+  width, 
+  height, 
+  ...props 
+}) {
+  return (
+    ${svgContent}
+  )
+}
+
+`;
+    
+    writeStream.write(componentCode);
+  }
+
+  // Process new SVG files to generate new components
+  for (const { filename, name, key } of newSvgFiles) {
     // Read SVG content
     const svgPath = path.join(logoDir, filename);
     const svgContent = await fs.readFile(svgPath, 'utf-8');
