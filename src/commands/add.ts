@@ -9,16 +9,21 @@ import { FileManager } from '../utils/fileManager.js';
 import { getLogoDirectory } from '../utils/config.js';
 import { getEffectiveLogoDirectory } from '../utils/frameworks.js';
 import { generateExportFile } from '../utils/exportGenerator.js';
-import { DownloadResult } from '../types/index.js';
+import { DownloadResult, ProjectConfig } from '../types/index.js';
 import { getOrCreateProjectConfig, isZeroConfigMode } from '../utils/autoDetect.js';
+import { loadProjectConfig } from '../utils/frameworks.js';
+
+interface AddOptions {
+  keepSvgs?: boolean;
+}
 
 /**
  * Handle the add command - download and save logo(s) to the project
  */
-export async function handleAdd(logos: string[]): Promise<void> {
+export async function handleAdd(logos: string[], options: AddOptions = {}): Promise<void> {
   // If no logos specified, enter interactive mode
   if (!logos || logos.length === 0) {
-    await handleInteractiveAdd();
+    await handleInteractiveAdd(options);
     return;
   }
 
@@ -108,6 +113,28 @@ export async function handleAdd(logos: string[]): Promise<void> {
       try {
         await generateExportFile();
         exportSpinner.succeed('Generated export file');
+        
+        // Check if we should remove SVG files after successful component generation
+        const projectConfig = await loadProjectConfig();
+        const shouldKeepSvgs = options.keepSvgs !== undefined ? options.keepSvgs : projectConfig?.keepOriginalSvgs;
+        
+        // Default to false (remove SVGs) if not specified
+        if (projectConfig && shouldKeepSvgs === false) {
+          const cleanupSpinner = ora('Removing original SVG files...').start();
+          try {
+            let removedCount = 0;
+            for (const result of successful) {
+              if (result.filePath && await fs.pathExists(result.filePath)) {
+                await fs.remove(result.filePath);
+                removedCount++;
+              }
+            }
+            cleanupSpinner.succeed(`Removed ${removedCount} original SVG file${removedCount === 1 ? '' : 's'} (components generated)`);
+          } catch (cleanupError: any) {
+            cleanupSpinner.warn('Failed to remove some SVG files');
+            console.log(chalk.gray('  Error: ' + cleanupError.message));
+          }
+        }
       } catch (error: any) {
         if (await isZeroConfigMode()) {
           exportSpinner.warn('Component generation requires initialization');
@@ -170,7 +197,7 @@ function displayResults(results: DownloadResult[], logoDir: string): void {
 /**
  * Handle interactive add mode
  */
-async function handleInteractiveAdd(): Promise<void> {
+async function handleInteractiveAdd(options: AddOptions = {}): Promise<void> {
   const spinner = ora('Loading logo registry...').start();
   
   try {
@@ -278,7 +305,7 @@ async function handleInteractiveAdd(): Promise<void> {
     
     // Now add the selected logos
     if (selectedLogos.length > 0) {
-      await handleAdd(selectedLogos);
+      await handleAdd(selectedLogos, options);
     } else {
       console.log(chalk.yellow('No logos selected.'));
     }

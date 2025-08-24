@@ -28,6 +28,7 @@ export interface ProjectConfig {
   exportFile: string;
   generateComponent: boolean;
   version: string;
+  keepOriginalSvgs?: boolean;  // Whether to keep SVG files after inlining (default: false)
 }
 
 export enum Framework {

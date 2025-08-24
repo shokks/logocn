@@ -57,8 +57,9 @@ const setupCLI = (): void => {
     .command('add')
     .description('Add logo(s) to your project (interactive mode if no logos specified)')
     .argument('[logos...]', 'Logo name(s) to add')
-    .action(async (logos: string[] = []) => {
-      await handleAdd(logos);
+    .option('--keep-svgs', 'Keep original SVG files after generating components')
+    .action(async (logos: string[] = [], options) => {
+      await handleAdd(logos, options);
     });
   
   // Remove command
