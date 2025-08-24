@@ -54,8 +54,9 @@ export async function handleInit(options: InitOptions = {}): Promise<void> {
       console.log(chalk.green(`✓ Detected ${frameworkConfig.name} project`));
     }
     
-    // Create initial config
+    // Create initial config with default keepOriginalSvgs
     const projectConfig = await createProjectConfig(projectPath);
+    projectConfig.keepOriginalSvgs = false; // Default to false
     
     // Interactive setup (unless --yes flag)
     if (!options.yes) {
@@ -81,11 +82,18 @@ export async function handleInit(options: InitOptions = {}): Promise<void> {
           default: (answers: any) => getFrameworkConfig(answers.framework).defaultDirectory,
           validate: (input: string) => input.trim() !== '' || 'Directory cannot be empty'
         },
+        {
+          type: 'confirm',
+          name: 'keepOriginalSvgs',
+          message: 'Keep original SVG files after generating components?',
+          default: false
+        },
       ]);
       
       // Update config with user choices
       projectConfig.framework = answers.framework;
       projectConfig.logoDirectory = answers.logoDirectory;
+      projectConfig.keepOriginalSvgs = answers.keepOriginalSvgs;
     }
     
     console.log();
@@ -93,6 +101,7 @@ export async function handleInit(options: InitOptions = {}): Promise<void> {
     console.log(chalk.gray(`  Framework: ${getFrameworkConfig(projectConfig.framework).name}`));
     console.log(chalk.gray(`  Directory: ${projectConfig.logoDirectory}`));
     console.log(chalk.gray(`  TypeScript: ${projectConfig.typescript ? 'Yes' : 'No'}`));
+    console.log(chalk.gray(`  Keep SVG files: ${projectConfig.keepOriginalSvgs ? 'Yes' : 'No'}`));
     console.log();
     
     // Install dependencies if needed
@@ -122,6 +131,24 @@ export async function handleInit(options: InitOptions = {}): Promise<void> {
         const exportSpinner = ora('Generating components for existing logos...').start();
         await generateExportFile(projectPath);
         exportSpinner.succeed(`Generated components for ${svgFiles.length} existing logo${svgFiles.length === 1 ? '' : 's'}`);
+        
+        // Check if we should remove SVG files after successful component generation
+        // Default to false (remove SVGs) if not specified
+        if (projectConfig.keepOriginalSvgs === false) {
+          const cleanupSpinner = ora('Removing original SVG files...').start();
+          try {
+            let removedCount = 0;
+            for (const svgFile of svgFiles) {
+              const svgPath = path.join(logoPath, svgFile);
+              await fs.remove(svgPath);
+              removedCount++;
+            }
+            cleanupSpinner.succeed(`Removed ${removedCount} original SVG file${removedCount === 1 ? '' : 's'} (components generated)`);
+          } catch (cleanupError: any) {
+            cleanupSpinner.warn('Failed to remove some SVG files');
+            console.log(chalk.gray('  Error: ' + cleanupError.message));
+          }
+        }
       }
     } catch (error) {
       // Non-critical error, just log it
