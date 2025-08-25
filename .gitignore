@@ -101,6 +101,9 @@ jspm_packages/
 .claude/
 CLAUDE.md
 
+# Documentation
+docs/
+
 # Development and testing
 logocn.config.json
 test/
