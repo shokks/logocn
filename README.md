@@ -1,6 +1,6 @@
 # logoCN
 
-![logoCN - Add logo components to your project with a single command](https://raw.githubusercontent.com/shokks/logocn/main/public/og.png)
+![logoCN - Add logo components to your project with a single command](https://raw.githubusercontent.com/shokks/logocn/main/public/og.png?v=2)
 
 Add production-ready logo components to your project. Just like shadcn/ui, but for logos.
 
